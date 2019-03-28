@@ -1,5 +1,7 @@
 # Social Cellular Automata Research Experiments (SCARE)
 
+Theory: Human evolution is based on the sharing of experiences (as "learned associations"). 
+
 Imagine a discrete grid populated by autonomous agents. This discrete grid is a universe that has the following entities in it:
 1. Plants. Seeds are harvested from plants 
 2. One CA per grid; grids can be occupied by both a CA and a plant.
@@ -32,3 +34,11 @@ Some universal truths are pre-programmed into each CA at the start of the univer
 * Both learned and experienced associations are "reinforced" when encountered in a similar way--and sometimes you can have an opposite type of reinforcement. This provides for situations where, if 1/5 interactions with something yields a negative outcome, a CA with no experience with this thing has a 1/5 chance of not trusting someone who shares a positive outcome--until more people share it and the learned association's reinforcement is > experienced association reinforcement. (Interestingly, this means we need to have greater "value" in experienced associations, so that we can quantify the value-difference between learned and experienced associations.)
 * Sharing knowledge is a founding experienced association--but one can learn not to trust others if the value of learned associations are mostly negative.
 * Anything with an "unknown" outcome is avoided at all costs. For example, anything where the outcome is "death" is avoided at all costs, since the association "action:death, target:any, outcome:unknown" is a universal truth that everyone knows. 
+
+
+
+## Comparison to Other Systems
+
+**TerraJS**
+* http://rileyjshaw.com/terra/
+* TerraJS does not account for social sharing of knowledge; each entity operates in its own discrete and unshared set of experiences.
