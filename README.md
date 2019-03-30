@@ -9,6 +9,10 @@ This sharing of experiences has led to the development of social groups and cult
 
 > Over the last million years or so, people evolved the ability to learn from each other, creating the possibility of cumulative, cultural evolution. Rapid cultural adaptation also leads to persistent differences between local social groups, and then competition between groups leads to the spread of behaviours that enhance their competitive ability. Then, in such culturally evolved cooperative social environments, natural selection within groups favoured genes that gave rise to new, more pro-social motives. Moral systems enforced by systems of sanctions and rewards increased the reproductive success of individuals who functioned well in such environments, and this in turn led to the evolution of other regarding motives like empathy and social emotions like shame. (Boyd & Richerson, 2009)
 
+Knowledge is unique to us and our social environment. https://quod.lib.umich.edu/j/jep/3336451.0009.201?view=text;rgn=main
+
+# Describing the Universe
+
 Imagine a discrete grid populated by autonomous agents. This discrete grid is a 
 universe that has the following entities in it:
 
