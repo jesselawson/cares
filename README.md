@@ -3,6 +3,12 @@
 Theory: Human evolution is based on the sharing of experiences (as "learned 
 associations"). 
 
+"Ethnographically, this diversity ['of social organizations, group sizes, kinship structures, and mating patterns'] is at least partially rooted in culturally-acquired and widely shared social rules" (Henrich, 2011).
+
+This sharing of experiences has led to the development of social groups and culture, and natural selection favored genes that resulted in more pro-social behavior, which in turn resulted in generation after generation of offspring with "sociogenetically superior" traits.
+
+> Over the last million years or so, people evolved the ability to learn from each other, creating the possibility of cumulative, cultural evolution. Rapid cultural adaptation also leads to persistent differences between local social groups, and then competition between groups leads to the spread of behaviours that enhance their competitive ability. Then, in such culturally evolved cooperative social environments, natural selection within groups favoured genes that gave rise to new, more pro-social motives. Moral systems enforced by systems of sanctions and rewards increased the reproductive success of individuals who functioned well in such environments, and this in turn led to the evolution of other regarding motives like empathy and social emotions like shame. (Boyd & Richerson, 2009)
+
 Imagine a discrete grid populated by autonomous agents. This discrete grid is a 
 universe that has the following entities in it:
 
@@ -65,3 +71,12 @@ The Cortex has two components:
 world;
 3. **Experienced Associations**, which are high-priority units of knowledge
 about the world.  
+
+
+
+
+# References
+
+Boyd, R. & Richerson, P. J. (2009). Culture and the evolution of human cooperation. https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2781880/
+
+Henrich, J. (2011). A cultural species: How culture drove human evolution. https://www.apa.org/science/about/psa/2011/11/human-evolution)
