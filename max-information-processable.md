@@ -71,6 +71,8 @@ Which tile near me is most likely to contain poison?
 
 
 [^mutable]: During reproduction the GCs are mutable, but for the purpose of this example we will hold them constant.
+
+
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTc3MTU5MDQ4MV19
+eyJoaXN0b3J5IjpbLTI1NDk2NDgxOSwxNzcxNTkwNDgxXX0=
 -->
