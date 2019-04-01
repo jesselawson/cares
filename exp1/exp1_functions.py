@@ -1,6 +1,7 @@
 # Functions common to all research experiments
 
 import random
+import PIL.Image
 
 class Plant:
     def __init__(self, id, color, size, has_berries, is_leafy, is_edible):
