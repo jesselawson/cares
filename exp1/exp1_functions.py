@@ -68,10 +68,11 @@ class Agent:
     def __init__(self, starting_cell):
         self.energy = 10
         self.age = 1
-        self.goal = "find_food"
+        self.goal = "find_food" # find_food
         """Agent.intent is a string that tells the System (during update) what it should do about this agent?"""
         self.intent = "start"
         self.cell = starting_cell #if starting_cell is not None else False
+        self.system = None
 
     def evaluate_goals(self):
         # Future Experiments: change goals based on energy. If energy > 50, goal == find_mate
@@ -79,12 +80,12 @@ class Agent:
         # Also: self.goal = "share_knowledge" (based on proximity to other organisms && self.energy)
         self.goal = "find_food"
 
-    def update(self, new_cell=None):
-        """Given the_cell, update this agent."""
+    def update(self, system):
+        """Update this agent, given a pointer to the system in which it exists."""
+
+        # System is a reference to the System where this Agent exists
 
         # Update the cell if we've moved
-        if new_cell:
-            self.cell = new_cell
 
         self.evaluate_goals()
 
@@ -155,7 +156,12 @@ class System:
 
                 # Is this cell occupied?
                 if self.cells[x][y].occupying_agent:
-                    self.cells[x][y].occupying_agent.update(self.cells[x][y])
+                    # Call any agent updating that needs to happen
+                    agent = self.cells[x][y].occupying_agent
+                    agent.update(self.cells[x][y], self)
+
+
+
 
     def print_step(self):
 
