@@ -68,7 +68,7 @@ class Agent:
     def __init__(self, starting_cell):
         self.energy = 10
         self.age = 1
-        self.goal = "find_food" # find_food
+        self.goal = "find_food" # find_food, Future: find_shelter, find_mate, etc
         """Agent.intent is a string that tells the System (during update) what it should do about this agent?"""
         self.intent = "start"
         self.cell = starting_cell #if starting_cell is not None else False
@@ -85,9 +85,32 @@ class Agent:
 
         # System is a reference to the System where this Agent exists
 
-        # Update the cell if we've moved
+        # Look around us. What cells are there?
+        x_pos = self.cell.x
+        y_pos = self.cell.y
+
+        # Cells around agent
+        cell_north = system.cells[x_pos][y_pos-1] if y_pos > 0 else False
+        cell_east = system.cells[x_pos+1][y_pos] if x_pos < system.width else False
+        cell_south = system.cells[x_pos][y_pos+1] if x_pos < system.height else False
+        cell_west = system.cells[x_pos-1][y_pos] if x_pos > 0 else False
 
         self.evaluate_goals()
+
+        if self.goal == "find_food":
+            # Check if we are on a plant cell. If yes, determine if we should eat it.
+            if self.cell.has_plant:
+                print("There's food here!")
+                # There's a plant here. Should we eat it?
+                # Step 1. "Observe" plant (take in characteristics & add to plants_encountered (the training data)
+                # Step 2. "Ponder" (train model based on all plants ever encountered / re-train model)
+                # Step 3. "Decide" (make a prediction)
+                # Step 4. "Act" (If prediction = edible, eat plant. Otherwise, move to a new cell.
+
+            # Check if any cell around us has a plant.
+            # If none have plants, choose a random direction and move there.
+
+
 
 
 
@@ -158,7 +181,7 @@ class System:
                 if self.cells[x][y].occupying_agent:
                     # Call any agent updating that needs to happen
                     agent = self.cells[x][y].occupying_agent
-                    agent.update(self.cells[x][y], self)
+                    agent.update(self)
 
 
 
