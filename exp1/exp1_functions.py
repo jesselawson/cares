@@ -1,10 +1,14 @@
 # Functions common to all research experiments
 
 import random
-import PIL.Image
+import PIL.Image as Image
+import os
+
+cwd = os.path.dirname(os.path.abspath(__file__))
 
 class Plant:
-    def __init__(self, id, color, size, has_berries, is_leafy, is_edible):
+    def __init__(self, img_id, id, color, size, has_berries, is_leafy, is_edible):
+        self.img_id = img_id
         self.id = id
         self.color = color
         self.size = size
@@ -17,18 +21,17 @@ class Plant:
         this plant is edible. If negative, this plant is poison.
         """
         if self.is_edible:
-            return random.randint(1,20)
+            return random.randint(1, 20)
         else:
-            return -1*random.randint(1,20)
+            return -1*random.randint(1, 20)
 
 
 plants = [
-    Plant("Tuna Bush", "red", "large", True, False, False),
-    Plant("Salmon Bush", "green", "medium", False, False, True),
-    Plant("Oreo Bush", "red", "large", True, True, True),
-    Plant("Leafy Fish Plant", "yellow", "medium", False, False, False),
-    Plant("Coffee Vine", "yellow", "small", True, False, True),
-    Plant("Burrito Bush", "green", "small", False, True, False)
+    Plant(1, "Tuna Bush", "red", "large", True, False, False),
+    Plant(2, "Salmon Bush", "green", "medium", False, False, True),
+    Plant(3, "Oreo Bush", "red", "large", True, True, True),
+    Plant(4, "Leafy Fish Plant", "yellow", "medium", False, False, False),
+    Plant(5, "Coffee Vine", "yellow", "small", True, False, True)
 ]
 
 
@@ -41,6 +44,12 @@ class Cell:
         self.y = y
         if has_plant:
             self.grow_plant()
+
+    def get_map_coords(self):
+        """Returns the [x,y] of where this cell is represented on the snapshot map."""
+        map_x = self.x * 16
+        map_y = self.y * 16
+        return [map_x, map_y]
 
     def consume_plant(self):
         if self.has_plant:
@@ -161,6 +170,29 @@ class System:
                     if not quiet:
                         print("- -> Already occupied!")
 
+        # Generate snapshot configurations
+        self.agent_image = Image.open(cwd + "\\images\\agent.jpg")
+        self.agent_image.thumbnail([16, 16], Image.ANTIALIAS)
+
+        self.plant_images = []
+
+        self.blank_image = Image.open(cwd + "\\images\\empty.jpg")
+        self.blank_image.thumbnail([16, 16], Image.ANTIALIAS)
+
+        for x in range(1, 6):
+            print("Reading plant%d.jpg..." % x)
+            self.plant_images.append(Image.open(cwd + "\\images\\plant%d.jpg" % x))
+
+        # The snapshot_base is a big white layer on which we'll build each step configuration.
+        # Doing it this way means we save processing power by not having to recreate the background
+        # every time.
+        self.snapshot_base = Image.new('RGB', (16*self.width, 16*self.height))
+
+        for i in range(0, 16*self.width, 8):
+            for j in range(0, 16*self.height, 8):
+                # Paste empty cells
+                self.snapshot_base.paste(self.blank_image, (i, j))
+
     def step_time(self):
         """Run through all agents and have them create an action and commit to an action."""
 
@@ -168,9 +200,13 @@ class System:
         if not self.quiet:
             print("A new day has begun! It's been %s days since this universe began." % (self.elapsed_time))
 
+        self.print_step()
+
         self.update_system()
+
         if self.elapsed_time < self.max_system_steps:
             self.step_time()
+
 
     def update_system(self):
         for x in range(0, self.width):
@@ -188,20 +224,29 @@ class System:
 
 
     def print_step(self):
+        """Create a graphical representation of the step at t=self.elapsed_time."""
+        snapshot = self.snapshot_base.copy() # Create a copy so we don't have artifacts from step_{t-1}
 
         # Print the plants
         for x in range(0, self.width):
             for y in range(0, self.height):
-                has_plant = "does not have a plant"
                 if self.cells[x][y].has_plant:
-                    plant_type = self.cells[x][y].plant.id
-                    has_plant = "has a %s plant" % plant_type
+                    plant_img_id = self.cells[x][y].plant.img_id
+                    print("Trying to get plant id %s..." % plant_img_id)
+                    the_image = self.plant_images[plant_img_id-1]
+                    snapshot.paste(the_image, self.cells[x][y].get_map_coords())
+
                     if not self.quiet:
-                        print("Cell at %s %s %s" % (self.cells[x][y].x, self.cells[x][y].y, has_plant))
+                        print("Printing %s at [%s, %s] " % (self.cells[x][y].plant.id, self.cells[x][y].x, self.cells[x][y].y))
 
         # Print the agents
         for i in self.agents:
-            pos_x = i.cell.x
-            pos_y = i.cell.y
+            the_image = self.agent_image
+            snapshot.paste(the_image, i.cell.get_map_coords())
+
             if not self.quiet:
-                print("Agent @ %s %s" % (pos_x, pos_y))
+                x, y = i.cell.get_map_coords()
+                print("Printing Agent A%s at [%s, %s]" % (i, x, y))
+
+        # Finally, save the file
+        snapshot.save(cwd + "\\states\\exp1-t%02d.jpg" % self.elapsed_time)
