@@ -93,32 +93,59 @@ class Agent:
     def update(self, system):
         """Update this agent, given a pointer to the system in which it exists."""
 
+        # Don't do anything if we're dead
+        if self.energy <= 0:
+            return False
+
         # System is a reference to the System where this Agent exists
 
         # Look around us. What cells are there?
         x_pos = self.cell.x
         y_pos = self.cell.y
 
-        # Cells around agent
-        cell_north = system.cells[x_pos][y_pos-1] if y_pos > 0 else False
-        cell_east = system.cells[x_pos+1][y_pos] if x_pos < system.width else False
-        cell_south = system.cells[x_pos][y_pos+1] if x_pos < system.height else False
-        cell_west = system.cells[x_pos-1][y_pos] if x_pos > 0 else False
+        # Cells around agent. Using immediate cells north, east, south, and west
+        neighborhood = [
+            system.cells[x_pos][y_pos-1] if y_pos > 0 else False,
+            system.cells[x_pos+1][y_pos] if x_pos < system.width-1 else False,
+            system.cells[x_pos][y_pos+1] if y_pos < system.height-1 else False,
+            system.cells[x_pos-1][y_pos] if x_pos > 0 else False
+        ]
 
         self.evaluate_goals()
 
         if self.goal == "find_food":
+            decision_complete = False
             # Check if we are on a plant cell. If yes, determine if we should eat it.
             if self.cell.has_plant:
                 print("There's food here!")
+                # TODO: exp2 below:
                 # There's a plant here. Should we eat it?
                 # Step 1. "Observe" plant (take in characteristics & add to plants_encountered (the training data)
                 # Step 2. "Ponder" (train model based on all plants ever encountered / re-train model)
                 # Step 3. "Decide" (make a prediction)
                 # Step 4. "Act" (If prediction = edible, eat plant. Otherwise, move to a new cell.
 
-            # Check if any cell around us has a plant.
-            # If none have plants, choose a random direction and move there.
+                # For exp1, just eat anything
+            else:
+                # This cell doesn't have a plant. Does any of the surrounding cells have a plant?
+                # Check all neighborhood cells for a plant that is unoccupied
+                for x in range(0, len(neighborhood)):
+                    # Is there a free cell with a plant?
+                    if neighborhood[x]:
+                        if not neighborhood[x].occupying_agent and neighborhood[x].has_plant:
+                            self.cell = neighborhood[x]
+                            decision_complete = True
+                            break
+
+                # No surrounding cell has a plant. Pick a random direction to go
+                while not decision_complete:
+                    random_neighborhood_cell = random.randint(0, len(neighborhood) - 1)
+                    if neighborhood[random_neighborhood_cell]:
+                        if not neighborhood[random_neighborhood_cell].occupying_agent:
+                            self.cell = neighborhood[random_neighborhood_cell]
+                            decision_complete = True
+
+        self.energy -= 1
 
 
 
@@ -172,16 +199,18 @@ class System:
 
         # Generate snapshot configurations
         self.agent_image = Image.open(cwd + "\\images\\agent.jpg")
-        self.agent_image.thumbnail([16, 16], Image.ANTIALIAS)
+        self.agent_image.thumbnail([16, 16], Image.FASTOCTREE)
 
         self.plant_images = []
 
         self.blank_image = Image.open(cwd + "\\images\\empty.jpg")
-        self.blank_image.thumbnail([16, 16], Image.ANTIALIAS)
+        self.blank_image.thumbnail([16, 16], Image.FASTOCTREE)
 
         for x in range(1, 6):
             print("Reading plant%d.jpg..." % x)
-            self.plant_images.append(Image.open(cwd + "\\images\\plant%d.jpg" % x))
+            the_image = Image.open(cwd + "\\images\\plant%d.jpg" % x)
+            the_image.thumbnail([16, 16], Image.FASTOCTREE)
+            self.plant_images.append(the_image)
 
         # The snapshot_base is a big white layer on which we'll build each step configuration.
         # Doing it this way means we save processing power by not having to recreate the background
@@ -196,7 +225,6 @@ class System:
     def step_time(self):
         """Run through all agents and have them create an action and commit to an action."""
 
-        self.elapsed_time += 1
         if not self.quiet:
             print("A new day has begun! It's been %s days since this universe began." % (self.elapsed_time))
 
@@ -205,6 +233,7 @@ class System:
         self.update_system()
 
         if self.elapsed_time < self.max_system_steps:
+            self.elapsed_time += 1
             self.step_time()
 
 

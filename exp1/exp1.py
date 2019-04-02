@@ -5,7 +5,7 @@ import os, sys
 
 cwd = os.path.dirname(os.path.abspath(__file__))
 
-system = System(100, 10, 25, 5)
+system = System(50, 10, 25, 10)
 
 system.step_time()
 
