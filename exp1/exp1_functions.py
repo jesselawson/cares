@@ -3,6 +3,7 @@
 import random
 import PIL.Image as Image
 import os
+from pathlib import Path
 
 cwd = os.path.dirname(os.path.abspath(__file__))
 
@@ -214,17 +215,17 @@ class System:
         return num_plants
 
         # Generate snapshot configurations
-        self.agent_image = Image.open(cwd + "\\images\\agent.jpg")
+        self.agent_image = Image.open(Path(cwd + "/images/agent.jpg"))
         self.agent_image.thumbnail([16, 16], Image.FASTOCTREE)
 
         self.plant_images = []
 
-        self.blank_image = Image.open(cwd + "\\images\\empty.jpg")
+        self.blank_image = Image.open(Path(cwd + "/images/empty.jpg"))
         self.blank_image.thumbnail([16, 16], Image.FASTOCTREE)
 
         for x in range(1, 6):
             print("Reading plant%d.jpg..." % x)
-            the_image = Image.open(cwd + "\\images\\plant%d.jpg" % x)
+            the_image = Image.open(Path(cwd + "/images/plant%d.jpg" % x))
             the_image.thumbnail([16, 16], Image.FASTOCTREE)
             self.plant_images.append(the_image)
 
@@ -313,4 +314,4 @@ class System:
                 print("Printing Agent A%s at [%s, %s]" % (i, x, y))
 
         # Finally, save the file
-        snapshot.save(cwd + "\\states\\exp1-t%02d.jpg" % self.elapsed_time)
+        snapshot.save(Path(cwd + "/states/exp1-t%02d.jpg" % self.elapsed_time))
