@@ -4,7 +4,7 @@
 
 Agent rules are limited to:
 
-* Energy starts at 10
+* Energy starts at 100
 * Every action {move, eat} costs 1 energy.
 * Age starts at 1
 * Agent dies if energy < 1
@@ -21,20 +21,17 @@ The universe keeps a log of all activity of all entities. Here is an example rea
 Future logs might have something like:
 
 ```
-4. CA47 tries to share knowledge with CA10 but she doesn't know anything about the plants yet :<
+4. CA47 shares knowledge about edible plant P2 with CA13 (-1 energy).
 5. CA48 shares knowledge about edible plants with CA31. (-1 energy).
 ```
 
-CA Rules:
-* Energy starts at 100
-* Every action takes 1 energy.
-* Every turn, take an action:
-
-CA Actions:
-If E < 
-
 
 Research Questions:
+
+* Social Survivability. What is the density of agents necessary before a population
+can be reasonably sustained, if we control for plant growth? (i.e., when one plant is
+eaten, an other is grown the next t-step)
+
 * What are some interesting differences between the decision trees of those who
 survived > 100 days and those who did not? 
 

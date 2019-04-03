@@ -16,10 +16,9 @@ Knowledge is unique to us and our social environment. https://quod.lib.umich.edu
 Imagine a discrete grid populated by autonomous agents. This discrete grid is a 
 universe that has the following entities in it:
 
-1. Plants. Seeds are harvested from plants 
+1. Plants. When a plant is consumed, it can give energy (type = edible) or take energy (type = poison).
 2. One CA per grid; grids can be occupied by both a CA and a plant.
-3. 
-4. It takes one unit of "food" to perform an action. 
+4. It takes one unit of energy to perform any one action.
 5. An action is either {move, share_knowledge, learn, reproduce, build_nest}
 
 Thought:
