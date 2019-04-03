@@ -61,7 +61,7 @@ class Cell:
     def grow_plant(self):
         if not self.has_plant:
             self.has_plant = True
-        self.plant = plants[random.randint(0, len(plants)-1)]
+            self.plant = plants[random.randint(0, len(plants)-1)]
 
 
 class Agent:
@@ -162,6 +162,8 @@ class System:
         self.num_starting_agents = num_starting_agents
         self.quiet = quiet
         self.max_system_steps = max_system_steps
+        # TODO: num_starting_agents should be customizable
+        self.max_active_plants = num_starting_agents*2
         # Populate cells
         for x in range(0, width_height):
             for y in range(0, width_height):
@@ -172,7 +174,14 @@ class System:
 
         # Grow random plants
         for x in range(num_starting_plants):
-            self.cells[random.randint(0, width_height-1)][random.randint(0, width_height-1)].grow_plant()
+            planted = False
+            while not planted:
+                random_x = random.randint(0, width_height - 1)
+                random_y = random.randint(0, width_height - 1)
+
+                if not self.cells[random_x][random_y].has_plant:
+                    planted = True
+                    self.cells[random_x][random_y].grow_plant()
 
         # Populate system with starting agents
         for i in range(0, self.num_starting_agents):
@@ -196,6 +205,13 @@ class System:
                 else:
                     if not quiet:
                         print("- -> Already occupied!")
+
+    def num_active_plants(self):
+        num_plants = 0
+        for x in range(0, self.width):
+            for y in range(0, self.height):
+                num_plants += 1 if self.cells[x][y].has_plant else 0
+        return num_plants
 
         # Generate snapshot configurations
         self.agent_image = Image.open(cwd + "\\images\\agent.jpg")
@@ -238,16 +254,35 @@ class System:
 
 
     def update_system(self):
+        # Update any occupying agents
         for x in range(0, self.width):
             for y in range(0, self.height):
                 """TODO: Cell.update() (which includes check for occupying agent, and then updates that agent accordingly)"""
-                print("[Day #%s] Updating cell %s %s" % (self.elapsed_time, x, y))
+                print("[Day #%s] Updating cell %s %s..." % (self.elapsed_time, x, y))
 
                 # Is this cell occupied?
                 if self.cells[x][y].occupying_agent:
                     # Call any agent updating that needs to happen
                     agent = self.cells[x][y].occupying_agent
                     agent.update(self)
+
+        # Update any plants, if necessary
+        for x in range(1, self.max_active_plants - self.num_active_plants()):
+            self.cells[x][y].grow_plant()
+
+        # TODO: MOdify the below to merge with the above block so the plants
+        # are populating at random places
+        for x in range(num_starting_plants):
+            planted = False
+            while not planted:
+                random_x = random.randint(0, width_height - 1)
+                random_y = random.randint(0, width_height - 1)
+
+                if not self.cells[random_x][random_y].has_plant:
+                    planted = True
+                    self.cells[random_x][random_y].grow_plant()
+
+
 
 
 
