@@ -5,9 +5,10 @@
 Agent rules are limited to:
 
 * Energy starts at 10
+* Every action {move, eat} costs 1 energy.
 * Age starts at 1
 * Agent dies if energy < 1
- 
+* If energy == 20, produce a new agent (offspring) in an empty surrounding cell
 
 The universe keeps a log of all activity of all entities. Here is an example readout:
 ```

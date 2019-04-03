@@ -1,9 +1,11 @@
 
 from exp1_functions import *
+import PIL.Image as Image
+import os, sys
 
-system = System(100, 3, 25, 5)
+cwd = os.path.dirname(os.path.abspath(__file__))
 
-system.print_step()
+system = System(50, 10, 25, 10)
 
 system.step_time()
 
