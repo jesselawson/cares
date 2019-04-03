@@ -7,6 +7,13 @@ from pathlib import Path
 
 cwd = os.path.dirname(os.path.abspath(__file__))
 
+def log(msg, newline=True):
+    if newline:
+        print(msg)
+    else:
+        print(msg, end="")
+
+
 class Plant:
     def __init__(self, img_id, id, color, size, has_berries, is_leafy, is_edible):
         self.img_id = img_id
@@ -48,8 +55,8 @@ class Cell:
 
     def get_map_coords(self):
         """Returns the [x,y] of where this cell is represented on the snapshot map."""
-        map_x = self.x * 16
-        map_y = self.y * 16
+        map_x = self.x * 8
+        map_y = self.y * 8
         return [map_x, map_y]
 
     def consume_plant(self):
@@ -76,7 +83,8 @@ class Agent:
            something that will bring us closer to that goal.
         3.
     """
-    def __init__(self, starting_cell):
+    def __init__(self, agent_id, starting_cell):
+        self.agent_id = agent_id
         self.energy = 10
         self.age = 1
         self.goal = "find_food" # find_food, Future: find_shelter, find_mate, etc
@@ -93,9 +101,11 @@ class Agent:
 
     def update(self, system):
         """Update this agent, given a pointer to the system in which it exists."""
-
+        log("* Agent #%02d (Starting Energy: %03d) " % (self.agent_id, self.energy), False)
         # Don't do anything if we're dead
         if self.energy <= 0:
+            # This agent will be cleaned up by the System update function
+            log("has died (energy = %d) and will be removed from the system." % self.energy)
             return False
 
         # System is a reference to the System where this Agent exists
@@ -118,7 +128,7 @@ class Agent:
             decision_complete = False
             # Check if we are on a plant cell. If yes, determine if we should eat it.
             if self.cell.has_plant:
-                print("There's food here!")
+                log("has found a plant ", False)
                 # TODO: exp2 below:
                 # There's a plant here. Should we eat it?
                 # Step 1. "Observe" plant (take in characteristics & add to plants_encountered (the training data)
@@ -127,6 +137,18 @@ class Agent:
                 # Step 4. "Act" (If prediction = edible, eat plant. Otherwise, move to a new cell.
 
                 # For exp1, just eat anything
+                log("and decides to eat it. ", False)
+                diff = self.cell.consume_plant()
+                self.energy += diff
+                if diff > 0:
+                    log("The plant is edible (+%d energy) " % diff, False)
+                else:
+                    log("The plant is poisonous (%d energy) " % diff, False)
+
+                if self.energy > 0:
+                    log("and not fatal. %d energy left. " % self.energy, False)
+                else:
+                    log("and fatal. :< This agent has died.", False)
             else:
                 # This cell doesn't have a plant. Does any of the surrounding cells have a plant?
                 # Check all neighborhood cells for a plant that is unoccupied
@@ -136,6 +158,7 @@ class Agent:
                         if not neighborhood[x].occupying_agent and neighborhood[x].has_plant:
                             self.cell = neighborhood[x]
                             decision_complete = True
+                            log("sees food nearby [%s,%s] and moves there. " % (self.cell.x, self.cell.y), False)
                             break
 
                 # No surrounding cell has a plant. Pick a random direction to go
@@ -145,9 +168,10 @@ class Agent:
                         if not neighborhood[random_neighborhood_cell].occupying_agent:
                             self.cell = neighborhood[random_neighborhood_cell]
                             decision_complete = True
+                            log("sees no food nearby and moves to a new random cell [%02d,%02d]. " % (self.cell.x, self.cell.y), False)
 
         self.energy -= 1
-
+        log("") # to print \n
 
 
 
@@ -161,6 +185,7 @@ class System:
         self.cells = [[None for x in range(width_height)] for y in range(width_height)]
         self.agents = []
         self.num_starting_agents = num_starting_agents
+        self.num_starting_plants = num_starting_plants
         self.quiet = quiet
         self.max_system_steps = max_system_steps
         # TODO: num_starting_agents should be customizable
@@ -187,7 +212,7 @@ class System:
         # Populate system with starting agents
         for i in range(0, self.num_starting_agents):
             if not quiet:
-                print("> Building agent %d..." % i)
+                log("> Building agent %d..." % i)
             cell_is_open = False
             while not cell_is_open:
 
@@ -195,24 +220,17 @@ class System:
                 random_y = random.randint(0, width_height-1)
 
                 if not quiet:
-                    print("-> Trying to put agent at {%s, %s}..." % (random_x, random_y))
+                    log("-> Trying to put agent at {%s, %s}..." % (random_x, random_y))
                 if not self.cells[random_x][random_y].occupying_agent:
-                    this_agent = Agent(self.cells[random_x][random_y])
+                    this_agent = Agent(i, self.cells[random_x][random_y])
                     self.agents.append(this_agent)
                     self.cells[random_x][random_y].occupying_agent = self.agents[-1] # Get most recently appended agent
                     cell_is_open = True
                     if not quiet:
-                        print("- -> Looks good!")
+                        log("- -> Looks good!")
                 else:
                     if not quiet:
-                        print("- -> Already occupied!")
-
-    def num_active_plants(self):
-        num_plants = 0
-        for x in range(0, self.width):
-            for y in range(0, self.height):
-                num_plants += 1 if self.cells[x][y].has_plant else 0
-        return num_plants
+                        log("- -> Already occupied!")
 
         # Generate snapshot configurations
         self.agent_image = Image.open(Path(cwd + "/images/agent.jpg"))
@@ -224,7 +242,7 @@ class System:
         self.blank_image.thumbnail([16, 16], Image.FASTOCTREE)
 
         for x in range(1, 6):
-            print("Reading plant%d.jpg..." % x)
+            log("Reading plant%d.jpg..." % x)
             the_image = Image.open(Path(cwd + "/images/plant%d.jpg" % x))
             the_image.thumbnail([16, 16], Image.FASTOCTREE)
             self.plant_images.append(the_image)
@@ -232,61 +250,74 @@ class System:
         # The snapshot_base is a big white layer on which we'll build each step configuration.
         # Doing it this way means we save processing power by not having to recreate the background
         # every time.
-        self.snapshot_base = Image.new('RGB', (16*self.width, 16*self.height))
+        self.snapshot_base = Image.new('RGB', (8*self.width, 8*self.height))
 
-        for i in range(0, 16*self.width, 8):
-            for j in range(0, 16*self.height, 8):
+        for i in range(0, 8*self.width, 8):
+            for j in range(0, 8*self.height, 8):
                 # Paste empty cells
                 self.snapshot_base.paste(self.blank_image, (i, j))
+
+    def num_active_plants(self):
+        num_plants = 0
+        for x in range(0, self.width):
+            for y in range(0, self.height):
+                num_plants += 1 if self.cells[x][y].has_plant else 0
+        return num_plants
 
     def step_time(self):
         """Run through all agents and have them create an action and commit to an action."""
 
-        if not self.quiet:
-            print("A new day has begun! It's been %s days since this universe began." % (self.elapsed_time))
-
         self.print_step()
 
-        self.update_system()
-
-        if self.elapsed_time < self.max_system_steps:
+        while self.elapsed_time < self.max_system_steps:
             self.elapsed_time += 1
-            self.step_time()
+            self.update_system()
+            self.print_step()
 
 
     def update_system(self):
         # Update any occupying agents
+        log("Day #%02d has begun!" % (self.elapsed_time))
+        i = 0
         for x in range(0, self.width):
             for y in range(0, self.height):
                 """TODO: Cell.update() (which includes check for occupying agent, and then updates that agent accordingly)"""
-                print("[Day #%s] Updating cell %s %s..." % (self.elapsed_time, x, y))
 
                 # Is this cell occupied?
                 if self.cells[x][y].occupying_agent:
-                    # Call any agent updating that needs to happen
                     agent = self.cells[x][y].occupying_agent
-                    agent.update(self)
+                    i+=1
 
-        # Update any plants, if necessary
-        for x in range(1, self.max_active_plants - self.num_active_plants()):
-            self.cells[x][y].grow_plant()
+                    # Call any agent updating that needs to happen
 
-        # TODO: MOdify the below to merge with the above block so the plants
-        # are populating at random places
-        for x in range(num_starting_plants):
+                    if agent.energy <= 0:
+                        try:
+                            log("* Agent #%02d (Starting Energy: %03d) has died and is being removed from the system." % (agent.agent_id, agent.energy))
+                            self.agents.remove(agent)
+                            self.cells[x][y].occupying_agent = None
+                        except ValueError:
+                            pass
+                    else:
+                        agent.update(self)
+
+        # Grow any new plants that need to be grown
+        num_new_plants = self.max_active_plants - self.num_active_plants()
+        if not num_new_plants <= 0:
+            if not self.quiet:
+                log("* Planting %d new plants." % num_new_plants)
+
+        for x in range(1, ):
+
             planted = False
             while not planted:
-                random_x = random.randint(0, width_height - 1)
-                random_y = random.randint(0, width_height - 1)
+                random_x = random.randint(0, self.width - 1)
+                random_y = random.randint(0, self.height - 1)
 
                 if not self.cells[random_x][random_y].has_plant:
                     planted = True
                     self.cells[random_x][random_y].grow_plant()
 
-
-
-
-
+        log("Day #%02d has ended!" % (self.elapsed_time))
 
     def print_step(self):
         """Create a graphical representation of the step at t=self.elapsed_time."""
@@ -297,12 +328,12 @@ class System:
             for y in range(0, self.height):
                 if self.cells[x][y].has_plant:
                     plant_img_id = self.cells[x][y].plant.img_id
-                    print("Trying to get plant id %s..." % plant_img_id)
+                    #log("Trying to get plant id %s..." % plant_img_id)
                     the_image = self.plant_images[plant_img_id-1]
                     snapshot.paste(the_image, self.cells[x][y].get_map_coords())
 
-                    if not self.quiet:
-                        print("Printing %s at [%s, %s] " % (self.cells[x][y].plant.id, self.cells[x][y].x, self.cells[x][y].y))
+                    #if not self.quiet:
+                    #    log("Printing %s at [%s, %s] " % (self.cells[x][y].plant.id, self.cells[x][y].x, self.cells[x][y].y))
 
         # Print the agents
         for i in self.agents:
@@ -311,7 +342,9 @@ class System:
 
             if not self.quiet:
                 x, y = i.cell.get_map_coords()
-                print("Printing Agent A%s at [%s, %s]" % (i, x, y))
+                #log("Printing Agent A%s at [%s, %s]" % (i, x, y))
 
         # Finally, save the file
         snapshot.save(Path(cwd + "/states/exp1-t%02d.jpg" % self.elapsed_time))
+
+        # In this next part, we'll create some mathplot
