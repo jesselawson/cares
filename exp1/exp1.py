@@ -18,7 +18,10 @@ system.step_time()
 
 # Now that it's done, convert the images in /images/exp1-t*.jpg to a gif
 
-def create_animated_gif(files, animated_gif_name, duration=.05):
+# Duration is 1/<fps>
+the_duration = 1/12
+
+def create_animated_gif(files, animated_gif_name, duration=the_duration):
     """Creates an animated gif from the list of files in var files."""
     images = []
     for file in files:
