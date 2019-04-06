@@ -1,7 +1,12 @@
-# Social Cellular Automata Research Experiments (SCARE)
+# Cellular Automata Research in Emergent Sentience (SCARE)
 
-Theory: Human evolution is based on the sharing of experiences (as "learned 
-associations"). 
+Theory: 
+
+* Human evolution is based on the sharing of knowledge.
+* If knowledge were quantized, each "unit" of knowledge would be an association between one or more other "units" of knowledge.
+* The more knowledge you share, the more you evolve
+
+
 
 "Ethnographically, this diversity ['of social organizations, group sizes, kinship structures, and mating patterns'] is at least partially rooted in culturally-acquired and widely shared social rules" (Henrich, 2011).
 
@@ -75,6 +80,24 @@ world;
 3. **Experienced Associations**, which are high-priority units of knowledge
 about the world.  
 
+
+# Development 
+
+Each Agent can have one of many "subroutines", and new experiments can mix and match
+different subroutines together. 
+
+Subroutines are added to the agent objects during instantiation:
+
+```
+system.subroutines.append(new_subroutine)
+...
+system.add_agent(...)
+-- Includes the subroutines
+```
+
+When each agent is making a decision, it process through its subroutines.
+
+The subroutines can work together OR they can just modify values blindly. 
 
 
 
