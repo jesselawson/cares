@@ -114,17 +114,63 @@ about the world.
 
 # Development 
 
-Each Agent can have one of many "subroutines", and new experiments can mix and match
-different subroutines together. 
+## Experiment Organization
 
-Subroutines are added to the agent objects during instantiation:
+Each set of environmental conditions (the state variables of the System), combined with
+instructions for Agent replication (i.e., which model we will use), is organized in an
+experiment folder. 
+
+For example, in Experiment 1 
+
+## Subroutines
+
+The bare essence of a subroutine is a function that takes in the entire Agent object,
+performs some logical computations, and then modifies some element(s) of the Agent. 
+
+For example, we know that Agents record all observations as a dynamically columned
+database. If we decide to add some environmental feature in the future, we could create
+a subroutine that checks whether there are observations of that environmental feature
+existing in this particular agent's observations.json file (a tinyDB db file). If 
+there does exist records, then we know this agent version is designed to interact with
+those environmental features. If there are no results returned, then this agent has not
+observed those environmental features--or it is not designed to--and this subroutine
+is just skipped.
+
+A Subroutine is a class object that has its own dynamic set of variables, including 
+it's own training_data array for whatever this subroutine is designed to do. 
+
+What type of training_data the subroutine stores and trains, including how it trains its
+
+
+Each Agent can have one of many "subroutines", and new experiments can mix and match
+different subroutines together.
+
+Subroutines are stored in the **System Subroutine Library**. 
+
+Groups of subroutines, called a **Subroutine Collection**, are created upon system instantiation. 
+
+
+
+Subroutine Collections are added to the agent objects during instantiation:
 
 ```
-system.subroutines.append(new_subroutine)
+mark_i = SubroutineCollection()
+
+def 
 ...
 system.add_agent(...)
 -- Includes the subroutines
 ```
+
+New subroutines should be registered with the System object, since it is the System that
+spawns the Agents. 
+
+**Q: How do we create agents with different subroutine groups?**
+
+The system has to be able to create a **collection of subroutines** and then apply that
+collection of subroutines to a particular agent that it is creating. 
+
+If we have `System.`
 
 When each agent is making a decision, it process through its subroutines.
 
