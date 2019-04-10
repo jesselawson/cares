@@ -4,6 +4,7 @@ import imageio
 
 cwd = os.path.dirname(os.path.abspath(__file__))
 
+
 def log(msg, newline=True):
     if newline:
         print(msg)

@@ -13,7 +13,7 @@ class Agent:
            something that will bring us closer to that goal.
         3.
     """
-    def __init__(self, agent_id, starting_cell):
+    def __init__(self, model, agent_id, system, starting_cell):
         self.agent_id = agent_id
         self.energy = 10
         self.age = 1
@@ -21,24 +21,24 @@ class Agent:
         """Agent.intent is a string that tells the System (during update) what it should do about this agent?"""
         self.intent = "start"
         self.cell = starting_cell #if starting_cell is not None else False
-        self.system = None
+        self.system = system
+        self.model = model
+        # Keep track of whether this agent has been marked as "end of turn".
+        # This is a hard stop we can employ mid-subroutine, if necessary.
+        self.alive = True
 
-    def evaluate_goals(self):
-        # Future Experiments: change goals based on energy. If energy > 50, goal == find_mate
-        # self.goal = "find_mate" if self.energy >= 50 else "find_food"
-        # Also: self.goal = "share_knowledge" (based on proximity to other organisms && self.energy)
-        self.goal = "find_food"
-
-    def update(self, system):
+    def update(self):
         """Update this agent, given a pointer to the system in which it exists."""
         log("* Agent #%02d (Starting Energy: %03d) " % (self.agent_id, self.energy), False)
-        # Don't do anything if we're dead
-        if self.energy <= 0:
-            # This agent will be cleaned up by the System update function
-            log("has died (energy = %d) and will be removed from the system." % self.energy)
-            return False
+
+        # Execute all subroutines
+        for subroutine in self.model.get_subroutines():
+            subroutine.__call__(self, self.system)
 
         # System is a reference to the System where this Agent exists
+
+        # TODO: Move all this neighborhood sensing stuff to the sensory inputs
+
 
         # Look around us. What cells are there?
         x_pos = self.cell.x
@@ -46,14 +46,14 @@ class Agent:
 
         # Cells around agent. Using immediate cells north, east, south, and west
         neighborhood = [
-            system.cells[x_pos][y_pos-1] if y_pos > 0 else False,
-            system.cells[x_pos+1][y_pos] if x_pos < system.width-1 else False,
-            system.cells[x_pos][y_pos+1] if y_pos < system.height-1 else False,
-            system.cells[x_pos-1][y_pos] if x_pos > 0 else False
+            self.system.cells[x_pos][y_pos-1] if y_pos > 0 else False,
+            self.system.cells[x_pos+1][y_pos] if x_pos < self.system.width-1 else False,
+            self.system.cells[x_pos][y_pos+1] if y_pos < self.system.height-1 else False,
+            self.system.cells[x_pos-1][y_pos] if x_pos > 0 else False
         ]
 
-        self.evaluate_goals()
-
+        # TODO: How to intergrate subroutines into the below "decision complete?"
+        # In other words, how do we convert this into a subroutine?
         if self.goal == "find_food":
             decision_complete = False
             # Check if we are on a plant cell. If yes, determine if we should eat it.

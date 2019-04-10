@@ -1,4 +1,4 @@
-from Project import *
+import random
 
 class Plant:
     def __init__(self, img_id, id, color, size, has_berries, is_leafy, is_edible):

@@ -11,6 +11,7 @@ from pathlib import Path
 from Agent import *
 from Cell import *
 from entities.Plant import *
+from Model import *
 from Functions import *
 
 class System:
@@ -58,7 +59,7 @@ class System:
                 if not quiet:
                     log("-> Trying to put agent at {%s, %s}..." % (random_x, random_y))
                 if not self.cells[random_x][random_y].occupying_agent:
-                    this_agent = Agent(i, self.cells[random_x][random_y])
+                    this_agent = Agent(NEWEST_MODEL, i, self, self.cells[random_x][random_y])
                     self.agents.append(this_agent)
                     self.cells[random_x][random_y].occupying_agent = self.agents[-1] # Get most recently appended agent
                     cell_is_open = True
@@ -134,7 +135,7 @@ class System:
                         except ValueError:
                             pass
                     else:
-                        agent.update(self)
+                        agent.update()
 
         # Grow any new plants that need to be grown
         num_new_plants = self.max_active_plants - self.num_active_plants()
