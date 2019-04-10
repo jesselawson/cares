@@ -1,4 +1,4 @@
-# Cellular Automata Research in Emergent Sentience (SCARE)
+# Cellular Agent Research Experiment System (CARES)
 
 Theory: 
 
