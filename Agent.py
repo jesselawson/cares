@@ -27,30 +27,19 @@ class Agent:
         # This is a hard stop we can employ mid-subroutine, if necessary.
         self.alive = True
 
+        self.neighborhood = []  # process_sensor_eyesight
+
     def update(self):
         """Update this agent, given a pointer to the system in which it exists."""
         log("* Agent #%02d (Starting Energy: %03d) " % (self.agent_id, self.energy), False)
 
         # Execute all subroutines
         for subroutine in self.model.get_subroutines():
-            subroutine.__call__(self, self.system)
+            subroutine.__call__(self)
 
         # System is a reference to the System where this Agent exists
 
-        # TODO: Move all this neighborhood sensing stuff to the sensory inputs
 
-
-        # Look around us. What cells are there?
-        x_pos = self.cell.x
-        y_pos = self.cell.y
-
-        # Cells around agent. Using immediate cells north, east, south, and west
-        neighborhood = [
-            self.system.cells[x_pos][y_pos-1] if y_pos > 0 else False,
-            self.system.cells[x_pos+1][y_pos] if x_pos < self.system.width-1 else False,
-            self.system.cells[x_pos][y_pos+1] if y_pos < self.system.height-1 else False,
-            self.system.cells[x_pos-1][y_pos] if x_pos > 0 else False
-        ]
 
         # TODO: How to intergrate subroutines into the below "decision complete?"
         # In other words, how do we convert this into a subroutine?
