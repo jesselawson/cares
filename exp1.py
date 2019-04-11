@@ -18,7 +18,7 @@ from pathlib import Path
 
 cwd = os.path.dirname(os.path.abspath(__file__))
 
-experiment_name = "exp1"
+experiment_name = "exp1a"
 
 directories = [
     Path(cwd+'/%s' % experiment_name),
@@ -36,10 +36,11 @@ for dir in directories:
 
 log("[OK]")
 
-system = System(experiment_name="exp1",
+system = System(
+                experiment_name=experiment_name,
                 width_height=50,
                 num_starting_agents=10,
-                num_starting_plants=100,
+                num_starting_plants=250,
                 max_system_steps=50)
 
 system.step_time()
@@ -62,6 +63,26 @@ All agents die out fairly quickly.
 
 """
 
+
+"""
+exp1a:
+width_height=50,
+                num_starting_agents=10,
+                num_starting_plants=250,
+                max_system_steps=50)
+
+exp1b:
+system = System(experiment_name=experiment_name,
+                width_height=50,
+                num_starting_agents=35,
+                num_starting_plants=250,
+                max_system_steps=50)
+                
+Here they're all going north because I don't randomly pick one of the n-number of 
+cells that surround it that contain plants. I only go for the first one--which
+just so happens to be the top one.
+
+"""
 
 
 

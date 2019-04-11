@@ -31,7 +31,7 @@ class Agent:
 
     def update(self):
         """Update this agent, given a pointer to the system in which it exists."""
-        log("* Agent #%02d (Starting Energy: %03d) " % (self.agent_id, self.energy), False)
+        log("+ Agent #%02d Starting Energy: %03d" % (self.agent_id, self.energy))
 
         # Execute all subroutines
         for subroutine in self.model.get_subroutines():
@@ -47,7 +47,7 @@ class Agent:
             decision_complete = False
             # Check if we are on a plant cell. If yes, determine if we should eat it.
             if self.cell.has_plant:
-                log("has found a plant ", False)
+                log("- has found a plant ", False)
                 # TODO: exp2 below:
                 # There's a plant here. Should we eat it?
                 # Step 1. "Observe" plant (take in characteristics & add to plants_encountered (the training data)
@@ -70,24 +70,24 @@ class Agent:
                     log("and fatal. :< This agent has died.", False)
             else:
                 # This cell doesn't have a plant. Does any of the surrounding cells have a plant?
-                # Check all neighborhood cells for a plant that is unoccupied
-                for x in range(0, len(neighborhood)):
+                # Check all self.neighborhood cells for a plant that is unoccupied
+                for x in range(0, len(self.neighborhood)):
                     # Is there a free cell with a plant?
-                    if neighborhood[x]:
-                        if not neighborhood[x].occupying_agent and neighborhood[x].has_plant:
-                            self.cell = neighborhood[x]
+                    if self.neighborhood[x]:
+                        if not self.neighborhood[x].occupying_agent and self.neighborhood[x].has_plant:
+                            self.cell = self.neighborhood[x]
                             decision_complete = True
-                            log("sees food nearby [%s,%s] and moves there. " % (self.cell.x, self.cell.y), False)
+                            log("- sees food nearby [%s,%s] and moves there. " % (self.cell.x, self.cell.y), False)
                             break
 
                 # No surrounding cell has a plant. Pick a random direction to go
                 while not decision_complete:
-                    random_neighborhood_cell = random.randint(0, len(neighborhood) - 1)
-                    if neighborhood[random_neighborhood_cell]:
-                        if not neighborhood[random_neighborhood_cell].occupying_agent:
-                            self.cell = neighborhood[random_neighborhood_cell]
+                    random_neighborhood_cell = random.randint(0, len(self.neighborhood) - 1)
+                    if self.neighborhood[random_neighborhood_cell]:
+                        if not self.neighborhood[random_neighborhood_cell].occupying_agent:
+                            self.cell = self.neighborhood[random_neighborhood_cell]
                             decision_complete = True
-                            log("sees no food nearby and moves to a new random cell [%02d,%02d]. " %
+                            log("- sees no food nearby and moves to a new random cell [%02d,%02d]. " %
                                 (self.cell.x, self.cell.y), False)
 
         self.energy -= 1

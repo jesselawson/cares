@@ -25,8 +25,8 @@ class System:
         self.num_starting_plants = num_starting_plants
         self.quiet = quiet
         self.max_system_steps = max_system_steps
-        # TODO: num_starting_agents should be customizable
-        self.max_active_plants = num_starting_agents*2
+        # TODO: max_active_plants should be customizable
+        self.max_active_plants = width_height*width_height-num_starting_agents
         # Populate cells
         for x in range(0, width_height):
             for y in range(0, width_height):
@@ -143,7 +143,7 @@ class System:
             if not self.quiet:
                 log("* Planting %d new plants." % num_new_plants)
 
-        for x in range(1, ):
+        for x in range(1, num_new_plants):
 
             planted = False
             while not planted:
