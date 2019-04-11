@@ -1,3 +1,4 @@
+
 #  Cellular Agent Research Experiment System (CARES)
 #  Copyright (c) 2019 Jesse Lawson
 #
@@ -18,19 +19,31 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-# "Mortality"
-# A Subroutine for the CARES Project
-# Written by: Jesse Lawson
-# Version: 2019.1
-# TODO: Version 2: Regenerate one energy at the start of the turn (up to a maximum).
+import os
+import imageio
 
-from cares.Functions import *
+cwd = os.path.dirname(os.path.abspath(__file__))
 
-def mortality(agent):
-    """This subroutine will hard-stop the agent if energy <= 0."""
-    if agent.energy <= 0:
-        # This agent will be cleaned up by the System update function
-        if not agent.system.quiet:
-            log("has died (energy = %d) and will be removed from the system." % agent.energy)
-        agent.alive = False
-        return False
+
+def log(msg, newline=True):
+    if newline:
+        print(msg)
+    else:
+        print(msg, end="")
+
+
+the_duration = 1/12
+
+
+def create_animated_gif(files, animated_gif_name, duration=the_duration):
+    """Creates an animated gif from the list of files in var files."""
+
+    # Default Duration is 1/<fps>
+    the_duration = duration
+
+    images = []
+    for file in files:
+        print("Grabbing snapshot '%s'... " % file)
+        images.append(imageio.imread(file))
+    print("Compiling GIF...")
+    imageio.mimsave(animated_gif_name, images, duration=duration)

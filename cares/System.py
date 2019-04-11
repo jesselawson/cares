@@ -1,18 +1,35 @@
+#  Cellular Agent Research Experiment System (CARES)
+#  Copyright (c) 2019 Jesse Lawson
+#
+#  Web: https://jesselawson.org
+#  Email: jesselawson@protonmail.com
+#  Telegram: t.me/jesselawson
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 import PIL.Image as Image
-import random
-import os, sys
-import imageio
 import glob
 from natsort import natsorted, ns
 from pathlib import Path
 
 # Project Files
 
-from Agent import *
-from Cell import *
+from cares.Agent import *
+from cares.Cell import *
 from entities.Plant import *
-from Model import *
-from Functions import *
+from cares.Model import *
+from cares.Functions import *
 
 class System:
     def __init__(self, experiment_name, width_height, num_starting_agents, num_starting_plants, max_system_steps=False, quiet=False):

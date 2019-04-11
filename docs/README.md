@@ -1,4 +1,4 @@
-# Cellular Agent Research Experiment System (CARES)
+# Cellular Agent Research Experiment System (AgentRES)
 
 Theory: 
 
@@ -37,39 +37,41 @@ universe that has the following entities in it:
 
 1. Plants. When a plant is consumed, it can give energy (type = edible) or take energy 
 (type = poison).
-2. One CA per grid; grids can be occupied by both a CA and a plant.
+2. One Agent per grid; grids can be occupied by both a Agent and a plant.
 4. It takes one unit of energy to perform any one action.
 5. An action is either {move, share_knowledge, learn, reproduce, build_nest}
 
 Thought:
-* A thought can be shared by CAs
+* A thought can be shared by Agents
 * A thought has a category {food, shelter, reproduction, 
 
 Computed Individual characteristics:
-* Social Value. If this CA has not learned a lot from other CAs, it will be less likely 
-to care about other CAs. 
+* Social Value. If this Agent has not learned a lot from other Agents, it will be less likely 
+to care about other Agents. 
 
 ### Scenarios/Research Questions
 **Poisoned Plants**. If we have some plants that are poison, how would we communicate to 
-other CAs not to eat them? 
+other Agents not to eat them? 
 * Proximity to poison plant consumption. If $C_1$ "witnesses" $C_2$ eating a poison 
 plant and then dying, it will "associate" action:eat, target:plant_type, outcome:death.
 
-**Scarcity.** How does scarcity among different environmental variables affect CAs?
+**Scarcity.** How does scarcity among different environmental variables affect Agents?
 * Scarcity of suitable mates
 * Scarcity of food
 * Scarcity of shelter materials
 
 ### Universal truths
-Some universal truths are pre-programmed into each CA at the start of the universe. These 
+Some universal truths are pre-programmed into each Agent at the start of the universe. These 
 are biological imperatives--drives that exist on an instinctual level. 
-* Every action requires one unit of food.
+
+* Every action requires energy. Energy is a continuous variable. When energy <= 0, 
+the agent is considered dead. 
 * There are **learned associations** and **experienced associations** (or just 
-"experience"). Universal truths are a sort of "experienced association;" a CA that is 
+"experience"). Universal truths are a sort of "experienced association;" a Agent that is 
 interacting based on learned association might develop a similar or opposite experience. 
 * Both learned and experienced associations are "reinforced" when encountered in a 
 similar way--and sometimes you can have an opposite type of reinforcement. This provides 
-for situations where, if 1/5 interactions with something yields a negative outcome, a CA 
+for situations where, if 1/5 interactions with something yields a negative outcome, a Agent 
 with no experience with this thing has a 1/5 chance of not trusting someone who shares a 
 positive outcome--until more people share it and the learned association's reinforcement 
 is > experienced association reinforcement. (Interestingly, this means we need to have 
@@ -92,20 +94,21 @@ own discrete and unshared set of experiences.
 
 # The Entity
 
-An entity is something that can be alive and can be dead. 
+An entity is something that can exist in the world and be interacted with by 
+Agents. For example, a Plant (a source of energy and/or poison) is an entity. 
 
-## The CA
+## The Agent
 
-A CA is an entity that is comprised of three primary elements:
+An Agent is an entity that is comprised of three primary elements:
 
 1. One or more **Genetic Characteristics**, which are combined with mates and passed on 
 to offspring (and thus, certain genetic characteristics are passed on--or not);
-2. One or more **Sensors**, which serve as input parameters to the Brain before
+2. A **Brain**, which is where all input from sensors are gathered, goals are 
+evaluated, and decisions are made.
+3. One or more **Sensors**, which serve as input parameters to the Brain before
 each update step.
-2. A **Brain**, which is where all input from sensors are gathered and 
-decisions are made.
 
-A CA's "brain" object has three components:
+An Agent's "brain" object has three components:
 
 1. **Hypothetical Associations**, which are low-priority units of knowledge
 about the world;
@@ -114,7 +117,7 @@ world;
 3. **Experienced Associations**, which are high-priority units of knowledge
 about the world.  
 
-A CA's behavior is governed by one or more subroutines that comprise that
+A Agent's behavior is governed by one or more subroutines that comprise that
 agent's **Model**. For example, say we have a collection of subroutines
 that we call "Apollo." The agent is an "Apollo" model. 
 
@@ -144,22 +147,11 @@ What type of training_data the subroutine stores and trains, including how it tr
 Each Agent can have one of many "subroutines", and new experiments can mix and match
 different subroutines together.
 
-Subroutines are stored in the **System Subroutine Library**. 
+Subroutines are stored in the **System Subroutine Library**. This is a folder full of 
+each subroutine function. 
 
-Groups of subroutines, called a **Subroutine Collection**, are created upon system instantiation. 
-
-
-
-Subroutine Collections are added to the agent objects during instantiation:
-
-```
-mark_i = SubroutineCollection()
-
-def 
-...
-system.add_agent(...)
--- Includes the subroutines
-```
+Groups of subroutines, called a **Subroutine Collection**, are created upon system 
+instantiation. 
 
 New subroutines should be registered with the System object, since it is the System that
 spawns the Agents. 
