@@ -35,31 +35,34 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import os
-import imageio
-
-cwd = os.path.dirname(os.path.abspath(__file__))
+from cares.Functions import *
+from subroutines.Subroutine import AgentSubroutine
 
 
-def log(msg, newline=True):
-    if newline:
-        print(msg)
-    else:
-        print(msg, end="")
+class AgentSensorSubroutineEyesight(AgentSubroutine):
 
+    def process(self, agent):
+        """Identifies neighborhood cells and stores them in an array."""
+        log("- Processing eyesight sensors... ", False)
+        # Look around us. What cells are there?
+        x_pos = agent.cell.x
+        y_pos = agent.cell.y
 
-the_duration = 1/12
+        # Cells around agent. Using immediate cells
+        # north, east, south, and west
+        # TODO: Update tinyDB for this agent with what it sees in its environment.
+        agent.neighborhood = [
+            agent.system.cells[x_pos][y_pos-1]
+            if y_pos > 0 else False,
 
+            agent.system.cells[x_pos+1][y_pos]
+            if x_pos < agent.system.width-1 else False,
 
-def create_animated_gif(files, animated_gif_name, duration=the_duration):
-    """Creates an animated gif from the list of files in var files."""
+            agent.system.cells[x_pos][y_pos+1]
+            if y_pos < agent.system.height-1 else False,
 
-    # Default Duration is 1/<fps>
-    the_duration = duration
+            agent.system.cells[x_pos-1][y_pos]
+            if x_pos > 0 else False
+        ]
 
-    images = []
-    for file in files:
-        print("Grabbing snapshot '%s'... " % file)
-        images.append(imageio.imread(file))
-    print("Compiling GIF...")
-    imageio.mimsave(animated_gif_name, images, duration=duration)
+        log("[ OK ]")

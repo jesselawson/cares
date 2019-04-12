@@ -33,18 +33,13 @@
 #  GNU General Public License for more details.
 #
 #  You should have received a copy of the GNU General Public License
-#  along with this program. If not, see <https://www.gnu.org/licenses/>.
-
-# "Evaluate Goals"
-# A Subroutine for the CARES Project
-# Written by: Jesse Lawson
-# Version: 2019.1
+#  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 from subroutines.Subroutine import AgentSubroutine
 
 
 class AgentSubroutineEvaluateGoals(AgentSubroutine):
-
+    """Evaluates whether this agent should find_food, find_mate, etc."""
     def process(self, agent):
         agent.goal = "find_food"
 
