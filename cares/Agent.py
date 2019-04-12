@@ -35,7 +35,8 @@ class Agent:
     """
     def __init__(self, model, agent_id, system, starting_cell):
         self.agent_id = agent_id
-        self.energy = 10
+        # TODO: Dynamically set set starting energy
+        self.energy = 20
         self.age = 1
         self.goal = "find_food" # find_food, Future: find_shelter, find_mate, etc
         """Agent.intent is a string that tells the System (during update) what it should do about this agent?"""

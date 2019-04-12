@@ -21,12 +21,15 @@
 # TODO: Version 2: Regenerate one energy at the start of the turn (up to a maximum).
 
 from cares.Functions import *
+from cares.Subroutine import AgentSubroutine
 
-def mortality(agent):
+
+class AgentSubroutineMortality(AgentSubroutine):
     """This subroutine will hard-stop the agent if energy <= 0."""
-    if agent.energy <= 0:
-        # This agent will be cleaned up by the System update function
-        if not agent.system.quiet:
-            log("has died (energy = %d) and will be removed from the system." % agent.energy)
-        agent.alive = False
-        return False
+    def process(self, agent):
+        if agent.energy <= 0:
+            # This agent will be cleaned up by the System update function
+            if not agent.system.quiet:
+                log("- as died (energy = %d) and will be removed from the system." % agent.energy)
+            agent.alive = False
+            return False

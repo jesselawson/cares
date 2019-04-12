@@ -19,7 +19,7 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 from cares.Functions import *
-from subroutines.Subroutine import AgentSubroutine
+from cares.Subroutine import AgentSubroutine
 
 
 class AgentSensorSubroutineEyesight(AgentSubroutine):
