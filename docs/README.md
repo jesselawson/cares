@@ -1,4 +1,72 @@
-# Cellular Agent Research Experiment System (AgentRES)
+# Cellular Agent Research Experiment System (CARES)
+
+The Cellular Agent Research Experiment System (CARES) was designed to study 
+programmable agents in a discretized, cellular environment.
+
+The purpose of a CARES experiment is to observe how changes in environmental, 
+genetic, and social conditions have short and long-term effects on the 
+evolution of agents.
+
+Some research questions that inspired this framework include:
+
+- How does the frequency of food source reproduction affect the survivability 
+  of a small group of hermaphroditic agents?
+  
+- How does the population size of a group of agents change when new groups of 
+  agents are introduced?
+  
+- How do agents form coherent models of information to share with each other?
+
+As an example, one of the first batches of experiments I ever ran included 
+agents and sources of energy (which I called “plants,” and they could be either 
+edible [and increase energy] or poisonous [and decrease energy]). Some of the 
+research questions I had included:
+
+- **Social Survivability.** What is the density of agents necessary before a 
+population can be reasonably sustained, if we control for plant growth? (i.e., 
+when one plant is eaten, an other is grown the next t-step)
+
+- What are some interesting differences between the decision trees of those 
+who survived > 100 days and those who did not?
+
+- Does the # of agents change how long any one agent can survive? In other 
+  words, does the size of the agent population have a linear impact 
+  (positive or negative) on the age of the oldest agent at the end of a 
+  certain number of days?
+
+- Scarcity. Does the frequency in which plants regrow affect the 
+  survivability of the population?
+
+- Scarcity. What is different in the population when we compare one test 
+  with plants that continue to regrow until every cell has a plant with a 
+  test where there are a maximum number of plants that can be in the system 
+  at any one time?
+
+# Quickstart
+
+Clone the repository: git clone https://github.com/jesselawson/cares.git
+
+Install dependencies: `cd cares && pip install -r requirements.txt`
+
+Run the example experiment: `python experiments/example1.py`
+
+Study the output in the `experiments/example1` folder. You'll have a compiled 
+gif of all state configurations at each time step, and *.jpg copies of the 
+state configuration at each time step.
+
+# How it Works
+
+CARES is comprised of a System, which is the core logic behind a grid of 
+cells, Agents, which are programmable autonomous entities, and Entities, which 
+are things that Agents can interact with–but are not Agents themselves.
+
+A System is composed of a number of starting Agents, some starting conditions 
+and rules, and customizable Entities.
+
+Experiments are ran via the command line (e.g., python my_experiment.py). When 
+your experiment has finished simulating, you’ll get a folder containing a JPEG 
+of the state configuration at every time step and a GIF animation of all the 
+state configuration snapshots
 
 Theory: 
 
