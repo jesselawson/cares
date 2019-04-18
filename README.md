@@ -57,6 +57,3 @@ contributors are expected to adhere to the
 3. Submit a pull request.
 
 It's that easy!
-
-# License
-
