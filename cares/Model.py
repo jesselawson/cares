@@ -41,7 +41,7 @@ class Model:
 
 # The order in which subroutines are added matters. These are FIFO!
 MODEL_ALPHA1 = Model('alpha1')
-MODEL_ALPHA1.add_subroutine(mortality)
+MODEL_ALPHA1.add_subroutine(AgentSubroutineMortality())
 MODEL_ALPHA1.add_subroutine(AgentSensorSubroutineEyesight())
 MODEL_ALPHA1.add_subroutine(AgentSubroutineEvaluateGoals())
 MODEL_ALPHA1.add_subroutine(move_randomly)

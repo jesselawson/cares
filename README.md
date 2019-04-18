@@ -12,6 +12,21 @@ toolset designed to study autonomous agents in a discrete, cellular environment.
 all state configurations at each time step, and *.jpg copies of the state configuration 
 at each time step. 
 
+# Roadmap
+
+**"avocado"**
+
+The "avocado" release is the first proof-of-concept release.
+
+* Move _all_ subroutines to new modular format
+* Convert agent update logic into subroutine 
+
+**"burrito"**
+
+The "burrito" release is the first beta release.
+
+* (roadmap coming soon)
+
 # Documentation
 
 The full documentation is available [here](https://jesselawson.org/cares).
