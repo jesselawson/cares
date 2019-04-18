@@ -22,7 +22,7 @@
 from subroutines.move_randomly import *
 from subroutines import AgentSubroutineEvaluateGoals
 from subroutines import AgentSensorSubroutineEyesight
-from subroutines.mortality import *
+from subroutines.AgentSubroutineMortality import *
 from subroutines.AgentSensorSubroutineEyesight import *
 
 class Model:
